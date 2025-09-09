@@ -1,34 +1,41 @@
-import { BACKEND_URL } from "./config.js";
+// src/api.js
 
-/** @typedef {import("./config.js").Item} Item */
-/** @typedef {import("./config.js").ItemPayload} ItemPayload */
-
-export async function getItems() {
-  /** @type {Item[]} */
-  const items = await fetch(`${BACKEND_URL}/items`).then((r) => r.json());
-  return items;
-}
-
+import { BACKEND_URL, API_ENDPOINTS } from './config.js';
 
 /**
- * @param {ItemPayload} item
+ * Sends a chat message to the backend and returns the AI's response.
+ * @param {string} message - The user's message to the AI.
+ * @param {string} mode - The main investor mode (e.g., "Default mode", "Negotiation").
+ * @param {string} customMode - The specific negotiation mode (e.g., "Data-Driven").
+ * @param {Array<Object>} history - The full chat history of the conversation.
+ * @returns {Promise<string>} - The AI's message as a string.
  */
-export async function createItem(item) {
-  await fetch(`${BACKEND_URL}/items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(item),
-  });
-}
 
-export async function deleteItem(id) {
-  await fetch(`${BACKEND_URL}/items/${id}`, {
-    method: "DELETE",
-  });
-}
+export const chatWithInvestor = async (message, mode, customMode, history) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.CHAT}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        mode,
+        customMode,
+        history,
+      }),
+    });
 
-export async function filterItem(filterName) {
-  // CODE HERE
-}
+    if (!response.ok) {
+      throw new Error(`API call failed with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.aiMessage;
+
+  } catch (error) {
+    console.error("Error communicating with the backend:", error);
+    // Return a user-friendly error message
+    return "I'm sorry, an error occurred while connecting. Please try again later.";
+  }
+};
