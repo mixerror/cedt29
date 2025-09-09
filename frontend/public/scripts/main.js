@@ -24,6 +24,8 @@ function renderMessage(message, sender) {
   const messageElement = document.createElement('div');
   messageElement.classList.add('message', `${sender}-message`);
   messageElement.textContent = message;
+  messageElement.setAttribute('role', 'status');
+  messageElement.setAttribute('aria-live', 'polite');
   chatBox.appendChild(messageElement);
   chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
 }
@@ -44,6 +46,10 @@ async function handleSendMessage(event) {
 
   const userMessage = messageInput.value.trim();
   if (!userMessage) return;
+
+  // Disable input and button
+  messageInput.disabled = true;
+  messageForm.querySelector('button[type="submit"]').disabled = true;
 
   // Clear input and display user message
   messageInput.value = '';
@@ -76,12 +82,17 @@ async function handleSendMessage(event) {
     renderMessage("An error occurred. Please try again.", 'ai');
     console.error(error);
   }
+  // Re-enable input and button
+  messageInput.disabled = false;
+  messageForm.querySelector('button[type="submit"]').disabled = false;
 }
 
 // --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', () => {
   // Initial check for custom selector visibility
   toggleCustomSelector();
+  // Hide typing indicator on load
+  typingIndicator.style.display = 'none';
 });
 
 modeSelector.addEventListener('change', toggleCustomSelector);
