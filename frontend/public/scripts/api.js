@@ -31,6 +31,9 @@ export const chatWithInvestor = async (message, mode, customMode, history) => {
     }
 
     const data = await response.json();
+    if (!data.aiMessage) {
+      return "Sorry, I couldn't get a response from the AI.";
+    }
     return data.aiMessage;
 
   } catch (error) {
