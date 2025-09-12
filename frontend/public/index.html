@@ -1,58 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Investor Chat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Investor Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
-        <header class="chat-header rounded-t-xl">
-            AI Investor Picthing Simulation
-        </header>
+  <div class="chat-container flex flex-col max-w-3xl mx-auto h-screen border rounded-xl shadow-lg">
+    <header class="chat-header rounded-t-xl p-4 bg-indigo-600 text-white font-bold">
+      AI Investor Pitching Simulation
+    </header>
 
-        <main id="chat-box" class="flex-1 p-4 overflow-y-auto">
-            <!-- Chat messages will be appended here -->
-        </main>
-
-        <div id="typing-indicator" class="p-4">
-            AI is typing...
-        </div>
-
-        <form id="message-form" class="p-4 flex items-center gap-2 border-t border-gray-200">
-            <div class="flex-1 flex gap-2">
-                <select id="mode-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="Standard">Standard Mode</option>
-                    <option value="Negotiation">Negotiation Mode</option>
-                    <option value="Data-Driven">Data-Driven Mode</option>
-                </select>
-                <select id="custom-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
-                    <option value="custom1">Custom 1</option>
-                    <option value="custom2">Custom 2</option>
-                </select>
-            </div>
-            <input 
-                type="text" 
-                id="message-input" 
-                placeholder="Type your message..." 
-                class="flex-grow p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
-                required
-            >
-            <button 
-                type="submit" 
-                class="bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-                Send
-            </button>
-             
-        </form>
-
-        
+    <!-- Upload Section -->
+    <div class="p-4 border-b border-gray-200">
+      <form id="upload-form" class="flex gap-2 items-center">
+        <input 
+          type="file" 
+          id="file-input" 
+          name="file"
+          accept=".pdf,.docx,.txt"
+          class="flex-1 p-2 border rounded-md"
+          required
+        >
+        <button 
+          type="submit" 
+          class="bg-[#808080] text-white px-4 py-2 rounded-md hover:bg-[#696969] transition-colors"
+        >
+          Upload
+        </button>
+      </form>
     </div>
 
-    <script type="module" src="./scripts/main.js"></script>
+    <main id="chat-box" class="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-2">
+      <!-- Chat messages will be appended here -->
+    </main>
+
+    <div id="typing-indicator" class="p-4 hidden text-gray-500 italic">
+      AI is typing...
+    </div>
+
+    <form id="message-form" class="p-4 flex items-center gap-2 border-t border-gray-200">
+      <div class="flex-1 flex gap-2">
+        <select id="mode-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="Standard">Standard Mode</option>
+          <option value="Negotiation">Negotiation Mode</option>
+          <option value="Data-Driven">Data-Driven Mode</option>
+        </select>
+      </div>
+      <input 
+        type="text" 
+        id="message-input" 
+        placeholder="Type your message..." 
+        class="flex-grow p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+      >
+      <button 
+        type="submit" 
+        class="bg-[#CD5C5C] text-white p-2 rounded-md hover:bg-[#B04C4C] transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        Send
+      </button>
+    </form>
+  </div>
+
+  <script type="module" src="./scripts/main.js"></script>
+  
 </body>
 </html>
