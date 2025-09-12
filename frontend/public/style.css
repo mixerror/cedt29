@@ -3,7 +3,7 @@
 /* --- Global Styles --- */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6;
+    background-color: #0e0d0d;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,7 @@ body {
     max-width: 640px;
     height: 90vh;
     max-height: 800px;
-    background-color: #fff;
+    background-color: #161616;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -27,7 +27,7 @@ body {
 /* --- Chat Header --- */
 .chat-header {
     padding: 1rem;
-    background-color: #4f46e5;
+    background-color: #3d3d3d;
     color: #fff;
     font-weight: bold;
     text-align: center;
@@ -70,4 +70,49 @@ body {
     font-style: italic;
     padding: 0.75rem 1rem;
     display: none;
+}
+
+.message {
+  position: relative;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+  transition: background 0.2s;
+}
+
+.message:hover {
+  background-color: #e0e0e0;
+}
+
+/* Hide buttons by default */
+.delete-btn, .edit-btn {
+  display: none;
+  position: absolute;
+  top: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Position buttons */
+.edit-btn {
+  right: 28px; /* place left of delete button */
+  font-size: 16px;
+}
+.delete-btn {
+  right: 4px;
+  font-size: 16px;
+}
+
+.message:hover .delete-btn,
+.message:hover .edit-btn {
+  display: block;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 14px;
 }
