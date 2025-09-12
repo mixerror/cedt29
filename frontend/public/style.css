@@ -4,7 +4,7 @@
 
 body {
   font-family: 'Mitr', sans-serif;
-  background: url("/Users/kj/Desktop/code/cedt29-main/frontend/public/charlesdeluvio-Lks7vei-eAg-unsplash.jpg") no-repeat center center fixed;
+  background: url("./background-frontend.jpg") no-repeat center center fixed;
   background-size: cover;
   display: flex;
   justify-content: center;
