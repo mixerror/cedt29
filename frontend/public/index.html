@@ -11,7 +11,7 @@
 <body>
     <div class="chat-container">
         <header class="chat-header rounded-t-xl">
-            AI Investor Assistant
+            AI Investor Picthing Simulation
         </header>
 
         <main id="chat-box" class="flex-1 p-4 overflow-y-auto">
@@ -27,6 +27,7 @@
                 <select id="mode-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="Standard">Standard Mode</option>
                     <option value="Negotiation">Negotiation Mode</option>
+                    <option value="Data-Driven">Data-Driven Mode</option>
                 </select>
                 <select id="custom-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 hidden">
                     <option value="custom1">Custom 1</option>
@@ -46,9 +47,12 @@
             >
                 Send
             </button>
+             
         </form>
+
+        
     </div>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="./scripts/main.js"></script>
 </body>
 </html>
