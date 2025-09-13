@@ -1,129 +1,105 @@
-// main.js
-
 import { chatWithInvestor, uploadAndAnalyzeFile } from './api.js';
 
-// --- UI Element References ---
+// Elements
 const chatBox = document.getElementById('chat-box');
 const modeSelector = document.getElementById('mode-selector');
-const customSelector = document.getElementById('custom-selector');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
 const typingIndicator = document.getElementById('typing-indicator');
 const uploadForm = document.getElementById('upload-form');
 const fileInput = document.getElementById('file-input');
 
-// --- State Management ---
+const menuBtn = document.getElementById("menu-btn");
+const menuDropdown = document.getElementById("menu-dropdown");
+const historyBtn = document.getElementById("history-btn");
+const historyPanel = document.getElementById("history-panel");
+const historyList = document.getElementById("history-list");
+
 let chatHistory = [];
 
-// --- Functions ---
-
-/**
- * Renders a new message in the chat box.
- * @param {string} message - The message content.
- * @param {'user' | 'ai'} sender - The message sender.
- */
+// Functions
 function renderMessage(message, sender) {
-  const messageElement = document.createElement('div');
-  messageElement.classList.add(
-    'message',
-    sender === 'user' ? 'bg-gray-200 p-2 rounded self-end' : 'bg-indigo-100 p-2 rounded self-start'
-  );
-  messageElement.textContent = message;
-  chatBox.appendChild(messageElement);
-  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+  const el = document.createElement('div');
+  el.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+  el.textContent = message;
+  chatBox.appendChild(el);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-/**
- * Toggles the visibility of the custom selector based on the main mode.
- */
-function toggleCustomSelector() {
-  customSelector.style.display = modeSelector.value === 'Negotiation' ? 'block' : 'none';
-}
-
-/**
- * Handles the form submission to send a new message.
- * @param {Event} event - The form submit event.
- */
-async function handleSendMessage(event) {
-  event.preventDefault();
-
+async function handleSendMessage(e) {
+  e.preventDefault();
   const userMessage = messageInput.value.trim();
   if (!userMessage) return;
 
-  // Disable input and button
-  messageInput.disabled = true;
-  messageForm.querySelector('button[type="submit"]').disabled = true;
-
-  // Clear input and display user message
-  messageInput.value = '';
   renderMessage(userMessage, 'user');
-  
-  // Add user message to history
   chatHistory.push({ role: 'user', content: userMessage });
 
-  // Show typing indicator
   typingIndicator.style.display = 'block';
-
-  // Get selected modes
-  const mode = modeSelector.value;
-  const customMode = customSelector.value;
+  messageInput.value = '';
 
   try {
-    // Call the API and get the AI's response
-    const aiResponse = await chatWithInvestor(userMessage, mode, customMode, chatHistory);
-
-    // Add AI message to history
+    const aiResponse = await chatWithInvestor(userMessage, modeSelector.value, null, chatHistory);
     chatHistory.push({ role: 'assistant', content: aiResponse });
-
-    // Hide typing indicator and render AI's message
-    typingIndicator.style.display = 'none';
     renderMessage(aiResponse, 'ai');
-
-  } catch (error) {
-    typingIndicator.style.display = 'none';
-    renderMessage("❌ Error: Could not get AI response. Try again.", 'ai');
-    console.error(error);
-  }
-
-  // Re-enable input and button
-  messageInput.disabled = false;
-  messageForm.querySelector('button[type="submit"]').disabled = false;
-}
-
-/**
- * Handles the file upload form.
- */
-async function handleFileUpload(event) {
-  event.preventDefault();
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  renderMessage(`📂 Uploaded file: ${file.name}`, 'user');
-  typingIndicator.style.display = 'block';
-
-  try {
-    const mode = modeSelector.value;
-    const customMode = customSelector.value;
-
-    const aiResponse = await uploadAndAnalyzeFile(file, mode, customMode);
-
-    chatHistory.push({  role: 'assistant', content: aiResponse });
-    renderMessage(aiResponse, 'ai');
-  } catch (error) {
-    renderMessage("❌ Error: File upload or AI processing failed.", 'ai');
-    console.error(error);
+  } catch {
+    renderMessage("❌ Error: Could not get AI response.", 'ai');
   } finally {
     typingIndicator.style.display = 'none';
   }
+
+  renderHistory();
 }
 
-// --- Event Listeners ---
+async function handleFileUpload(e) {
+  e.preventDefault();
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  renderMessage(`📂 Uploaded: ${file.name}`, 'user');
+  typingIndicator.style.display = 'block';
+
+  try {
+    const aiResponse = await uploadAndAnalyzeFile(file, modeSelector.value, null);
+    chatHistory.push({ role: 'assistant', content: aiResponse });
+    renderMessage(aiResponse, 'ai');
+  } catch {
+    renderMessage("❌ File upload failed.", 'ai');
+  } finally {
+    typingIndicator.style.display = 'none';
+  }
+
+  renderHistory();
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+  if (chatHistory.length === 0) {
+    historyList.innerHTML = "<li>ยังไม่มีประวัติ</li>";
+    return;
+  }
+  chatHistory.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.role === "user" ? "👤" : "🤖"} ${item.content}`;
+    historyList.appendChild(li);
+  });
+}
+
+// Events
 document.addEventListener('DOMContentLoaded', () => {
-  toggleCustomSelector();
-  typingIndicator.style.display = 'none';
+  if (menuBtn && menuDropdown) {
+    menuBtn.addEventListener("click", () => {
+      const isOpen = menuDropdown.style.display === "block";
+      menuDropdown.style.display = isOpen ? "none" : "block";
+    });
+  }
+  if (historyBtn && historyPanel) {
+    historyBtn.addEventListener("click", () => {
+      historyPanel.classList.toggle("active");
+      menuDropdown.style.display = "none";
+      renderHistory();
+    });
+  }
 });
 
-modeSelector.addEventListener('change', toggleCustomSelector);
 messageForm.addEventListener('submit', handleSendMessage);
 uploadForm.addEventListener('submit', handleFileUpload);
-

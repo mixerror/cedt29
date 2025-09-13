@@ -6,13 +6,22 @@
   <title>AI Investor Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="chat-container flex flex-col max-w-3xl mx-auto h-screen border rounded-xl shadow-lg">
-    <header class="chat-header rounded-t-xl p-4 bg-indigo-600 text-white font-bold">
+    
+    <!-- Header -->
+    <header class="chat-header rounded-t-xl p-4 bg-indigo-600 text-white font-bold relative">
       AI Investor Pitching Simulation
+
+      <!-- ปุ่มสามขีด -->
+      <button class="menu-button" id="menu-btn">☰</button>
+
+      <!-- เมนู dropdown -->
+      <div class="menu-dropdown" id="menu-dropdown">
+        <button id="history-btn">📜 ดูประวัติการใช้งาน</button>
+      </div>
     </header>
 
     <!-- Upload Section -->
@@ -35,6 +44,7 @@
       </form>
     </div>
 
+    <!-- Chat Box -->
     <main id="chat-box" class="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-2">
       <!-- Chat messages will be appended here -->
     </main>
@@ -43,6 +53,7 @@
       AI is typing...
     </div>
 
+    <!-- Message Form -->
     <form id="message-form" class="p-4 flex items-center gap-2 border-t border-gray-200">
       <div class="flex-1 flex gap-2">
         <select id="mode-selector" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -66,7 +77,13 @@
     </form>
   </div>
 
-  <script type="module" src="./scripts/main.js"></script>
-  
+  <!-- กล่องประวัติ -->
+  <div id="history-panel">
+    <h3>ประวัติการใช้งาน</h3>
+    <ul id="history-list"></ul>
+  </div>
+
+  <!-- โหลด JS -->
+  <script type="module" src="./scripts/main.js" defer></script>
 </body>
 </html>
