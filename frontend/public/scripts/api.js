@@ -1,43 +1,29 @@
-// src/api.js
+import { BACKEND_URL } from "./config.js";
 
-import { BACKEND_URL, API_ENDPOINTS } from "./config.js";
-
-/**
- * Sends a chat message to the backend and returns the AI's response.
- * @param {string} message - The user's message to the AI.
- * @param {string} mode - The main investor mode (e.g., "Default mode", "Negotiation").
- * @param {string} customMode - The specific negotiation mode (e.g., "Data-Driven").
- * @param {Array<Object>} history - The full chat history of the conversation.
- * @returns {Promise<string>} - The AI's message as a string.
- */
-
-export const chatWithInvestor = async (message, mode, customMode, history) => {
+export async function sendMessage(messages) {
   try {
-    const response = await fetch(`${BACKEND_URL}${API_ENDPOINTS.CHAT}`, {
+    const res = await fetch(`${BACKEND_URL}/api/chat`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message,
-        mode,
-        customMode,
-        history,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages }),
     });
 
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+    const data = await res.json();
+    let aiReply = "";
+
+    if (data && data.reply) {
+      if (typeof data.reply === "string") aiReply = data.reply;
+      else if (typeof data.reply === "object" && data.reply.content) aiReply = data.reply.content;
+      else aiReply = String(data.reply);
+    } else {
+      aiReply = "No reply from server.";
     }
 
-    const data = await response.json();
-    if (!data.aiMessage) {
-      return "Sorry, I couldn't get a response from the AI.";
-    }
-    return data.aiMessage;
+    return aiReply;
   } catch (error) {
-    console.error("Error communicating with the backend:", error);
-    // Return a user-friendly error message
-    return "I'm sorry, an error occurred while connecting. Please try again later.";
+    console.error("API error:", error);
+    throw error;
   }
-};
+}
